@@ -1,3 +1,3 @@
-FROM test/httpd-24-centos7:latest
+FROM test/httpd-24-centos7b:latest
 
 COPY . /var/www/html
