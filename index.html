@@ -1,13 +1,24 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Versione di Prova</title>
+<title>Ora Attuale</title>
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    margin-top: 50px;
+  }
+  #displayTime {
+    font-size: 2em;
+    color: #333;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
-    <h1>Questa è la versione di prova delle ore 
-    via webook</h1>
+
+<h1>Questa è una build di un immagine docker che gira su un pod creata a l'ora:</h1>
+<p id="displayTime"></p>
 
 <script>
   // Funzione per ottenere e mostrare l'ora
@@ -37,5 +48,6 @@
   // Aggiorna l'ora ogni secondo
   setInterval(showCurrentTime, 1000); 
 </script>
+
 </body>
 </html>
