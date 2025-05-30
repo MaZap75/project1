@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Ora Attuale</title>
+<title>Ultimo Commit su Git</title>
 <style>
   body {
     font-family: sans-serif;
     text-align: center;
     margin-top: 50px;
   }
-  #displayTime {
+  #commitTime {
     font-size: 2em;
     color: #333;
     font-weight: bold;
@@ -17,36 +17,23 @@
 </head>
 <body>
 
-<h1>Questa è una build di un immagine docker che gira su un pod creata a l'ora:</h1>
-<p id="displayTime"></p>
+<h1>Questa immagine Docker gira su un pod, creata con il commit del repository Git alle:</h1>
+<p id="commitTime">Caricamento data del commit...</p>
 
 <script>
-  // Funzione per ottenere e mostrare l'ora
-  function showCurrentTime() {
-    const now = new Date(); // Crea un nuovo oggetto Date con l'ora attuale
-    
-    // Ottieni ore, minuti e secondi
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    let seconds = now.getSeconds();
-
-    // Aggiungi uno zero iniziale se il numero è < 10 (es. 05 anziché 5)
-    hours = hours < 10 ? '0' + hours : hours;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
-
-    // Formatta la stringa dell'ora
-    const timeString = hours + ':' + minutes + ':' + seconds;
-
-    // Trova l'elemento HTML con id "displayTime" e aggiorna il suo contenuto
-    document.getElementById('displayTime').textContent = timeString;
+  async function fetchCommitTime() {
+    try {
+      const response = await fetch("https://api.github.com/repos/MaZap75/project1/commits/main");
+      const data = await response.json();
+      const commitDate = new Date(data.commit.committer.date).toLocaleString();
+      document.getElementById("commitTime").innerText = "Ultimo commit: " + commitDate;
+    } catch (error) {
+      document.getElementById("commitTime").innerText = "Errore nel recupero della data!";
+      console.error("Errore nel fetch del commit:", error);
+    }
   }
 
-  // Chiama la funzione una volta all'avvio per mostrare l'ora immediatamente
-  showCurrentTime();
-
-  // Aggiorna l'ora ogni secondo
-  setInterval(showCurrentTime, 1000); 
+  window.onload = fetchCommitTime;
 </script>
 
 </body>
