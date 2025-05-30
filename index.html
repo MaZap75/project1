@@ -1,60 +1,62 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimo Commit su Git</title>
-<style>
-  body {
-    font-family: sans-serif;
-    text-align: center;
-    margin-top: 50px;
-    background-color: #f4f4f4; /* Un tocco di colore di sfondo */
-  }
-  h1 {
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
-  #commitTime {
-    font-size: 2em;
-    color: #e74c3c; /* Colore più vivace per il risultato */
-    font-weight: bold;
-    padding: 10px;
-    border: 2px solid #ccc;
-    display: inline-block; /* Per applicare padding e border correttamente */
-    border-radius: 8px; /* Angoli arrotondati */
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Ombra leggera */
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ora del Commit Git</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4f4f4;
+        }
+        #commitTime {
+            font-size: 2em;
+            color: #e74c3c;
+            font-weight: bold;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
 
-<h1>Questa immagine Docker gira su un pod, creata con il commit del repository Git alle:</h1>
-<p id="commitTime">Caricamento data del commit...</p>
+<h1>Ultimo commit eseguito su GitHub alle:</h1>
+<p id="commitTime">Caricamento ora del commit...</p>
 
-async function fetchCommitTime() {
-    const owner = 'MaZap75';
-    const repo = 'project1';
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`;
 <script>
-    try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
-        
-        const commits = await response.json();
-        if (!commits.length) throw new Error("Nessun commit trovato!");
+  async function fetchCommitTime() {
+      const owner = 'MaZap75'; // Cambia con il tuo username GitHub
+      const repo = 'project1'; // Nome del tuo repository GitHub
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`;
 
-        const commitDate = new Date(commits[0].commit.committer.date).toLocaleString('it-IT');
-        document.getElementById("commitTime").innerText = "Ultimo commit: " + commitDate;
+      try {
+          const response = await fetch(apiUrl);
+          if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
 
-    } catch (error) {
-        document.getElementById("commitTime").innerText = `Errore: ${error.message}`;
-        console.error("Dettagli errore:", error);
-    }
-}
-window.onload = fetchCommitTime;
+          const commits = await response.json();
+          if (!commits.length) throw new Error("Nessun commit trovato!");
 
+          // Estrai l'ORA del commit e formatta correttamente
+          const commitDate = new Date(commits[0].commit.committer.date).toLocaleTimeString('it-IT', { 
+              hour: '2-digit', 
+              minute: '2-digit', 
+              second: '2-digit' 
+          });
+
+          document.getElementById("commitTime").innerText = "Ora del commit: " + commitDate;
+
+      } catch (error) {
+          document.getElementById("commitTime").innerText = `Errore: ${error.message}`;
+          console.error("Dettagli errore:", error);
+      }
+  }
+
+  window.onload = fetchCommitTime;
 </script>
 
 </body>
