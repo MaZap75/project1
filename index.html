@@ -33,58 +33,28 @@
 <h1>Questa immagine Docker gira su un pod, creata con il commit del repository Git alle:</h1>
 <p id="commitTime">Caricamento data del commit...</p>
 
-<script>
-  async function fetchCommitTime() {
-    const owner = 'MaZap75'; // Definisci proprietario e repository come variabili
+async function fetchCommitTime() {
+    const owner = 'MaZap75';
     const repo = 'project1';
-    const branch = 'main'; // Assicurati che questo sia il branch corretto (es. 'main' o 'master')
-
-    // Costruisci l'URL dell'API di GitHub in modo più robusto
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`;
-
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`;
+<script>
     try {
-      const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`Errore HTTP: ${response.status}`);
+        
+        const commits = await response.json();
+        if (!commits.length) throw new Error("Nessun commit trovato!");
 
-      // Gestione degli errori HTTP (es. 404 Not Found, 403 Forbidden)
-      if (!response.ok) {
-        // Lancia un errore se la risposta non è OK
-        const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error(`Errore HTTP: ${response.status} - ${errorData.message || 'Errore sconosciuto'}`);
-      }
-
-      const data = await response.json();
-      
-      // Verifica se i dati necessari sono presenti nella risposta
-      if (!data || !data.commit || !data.commit.committer || !data.commit.committer.date) {
-        throw new Error("Formato della risposta API inatteso o dati mancanti.");
-      }
-
-      // Estrai la data del commit e formatta per la visualizzazione locale
-      const commitDate = new Date(data.commit.committer.date).toLocaleString('it-IT', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
-      });
-
-      document.getElementById("commitTime").innerText = "Ultimo commit: " + commitDate;
+        const commitDate = new Date(commits[0].commit.committer.date).toLocaleString('it-IT');
+        document.getElementById("commitTime").innerText = "Ultimo commit: " + commitDate;
 
     } catch (error) {
-      // Gestione centralizzata degli errori per display e console
-      const errorMessage = `Errore nel recupero della data: ${error.message || 'Verifica la console per i dettagli.'}`;
-      document.getElementById("commitTime").innerText = errorMessage;
-      console.error("Dettagli errore nel fetch del commit:", error);
+        document.getElementById("commitTime").innerText = `Errore: ${error.message}`;
+        console.error("Dettagli errore:", error);
     }
-  }
+}
+window.onload = fetchCommitTime;
 
-  // Esegui la funzione quando la pagina è completamente caricata
-  window.onload = fetchCommitTime;
-
-  // Opzionale: Aggiorna la data del commit periodicamente (es. ogni 5 minuti)
-  // Non è sempre necessario per un commit, ma può essere utile per monitoraggio.
-  // setInterval(fetchCommitTime, 300000); // 300000ms = 5 minuti
 </script>
 
 </body>
